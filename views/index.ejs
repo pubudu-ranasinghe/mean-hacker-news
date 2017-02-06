@@ -1,11 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<head>
+	<title>HackerNews</title>
+	<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.js"></script>
+	<script src="javascripts/angularApp.js"></script>
+</head>
+<body ng-app="hackerNews">
+	<div class="container">
+		<ui-view></ui-view>
+	</div>
+	<script type="text/ng-template" id="/home.html">
+		<div class="header">
+			Hacker News
+		</div>
+		<div ng-repeat="post in posts | orderBy: '-upvotes'" class="post-item">
+			<span ng-click="incrementUpvotes(post)" class="upvote-arrow">^</span>
+			<a ng-show="post.link" href="{{ post.link }}">
+				{{ post.title }}
+			</a>
+			<span ng-hide="post.link">
+				{{ post.title }}
+			</span>
+			- upvotes: {{ post.upvotes }} | 
+			<span><a href="#!/posts/{{$index}}">comments</a></span>
+		</div>
+		<form ng-submit="addPost()">
+			<input type="text" placeholder="Title" ng-model="title">
+			<input type="text" placeholder="Link" ng-model="link">
+			<button type="submit">Post</button>
+		</form>
+	</script>
+	<script type="text/ng-template" id="/posts.html">
+		<div class="header">
+			Hacker News
+		</div>
+		<h4>
+			<a ng-show="post.link" href="{{post.link}}">
+				{{ post.title }}
+			</a>
+			<span ng-hide="post.link">
+				{{ post.title }}
+			</span>
+		</h4>
+		<div class="comments">
+			<div class="comment" ng-repeat="comment in post.comments |  orderBy:'-upvotes'">
+				<span ng-click="incrementUpvotes(comment)" class="upvote-arrow">^</span>
+				{{ comment.body }} - upvotes: {{ comment.upvotes }}
+				<span>{{ comment.author }}</span>
+			</div>
+			<form ng-submit="addComment()">
+				<input type="text" placeholder="comment" ng-model="body">
+				<input type="text" placeholder="author" ng-model="author">
+				<button type="submit">Comment</button>
+			</form>
+		</div>
+	</script>
+</body>
 </html>
