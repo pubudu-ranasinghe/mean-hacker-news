@@ -24,7 +24,7 @@
 				{{ post.title }}
 			</span>
 			- upvotes: {{ post.upvotes }} | 
-			<span><a href="#!/posts/{{$index}}">comments</a></span>
+			<span><a href="#!/posts/{{ post._id }}">comments</a></span>
 		</div>
 		<form ng-submit="addPost()">
 			<input type="text" placeholder="Title" ng-model="title">
