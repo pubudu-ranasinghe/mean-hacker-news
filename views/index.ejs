@@ -9,6 +9,12 @@
 </head>
 <body ng-app="hackerNews">
 	<div class="container">
+		<ul class="nav" ng-controller="NavCtrl">
+			<li ng-show="isLoggedIn()">{{ currentUser() }}</li>
+			<li ng-show="isLoggedIn()"><a href="" ng-click="logout()">Logout</a></li>
+			<li ng-hide="isLoggedIn()"><a ui-sref="login">Login</a></li>
+			<li ng-hide="isLoggedIn()"><a ui-sref="register">Register</a></li>
+		</ul>
 		<ui-view></ui-view>
 	</div>
 	<script type="text/ng-template" id="/home.html">
@@ -23,10 +29,14 @@
 			<span ng-hide="post.link">
 				{{ post.title }}
 			</span>
-			- upvotes: {{ post.upvotes }} | 
+			- upvotes: {{ post.upvotes }}
+			- posted by: {{ post.author }} 
 			<span><a href="#!/posts/{{ post._id }}">comments</a></span>
 		</div>
-		<form ng-submit="addPost()">
+		<div ng-hide="isLoggedIn()">
+			You need to <a ui-sref="login">Log In</a> or <a ui-sref="register">Register</a> before you can add a post.
+		</div>
+		<form ng-submit="addPost()" ng-show="isLoggedIn()">
 			<input type="text" placeholder="Title" ng-model="title">
 			<input type="text" placeholder="Link" ng-model="link">
 			<button type="submit">Post</button>
@@ -50,12 +60,43 @@
 				{{ comment.body }} - upvotes: {{ comment.upvotes }}
 				<span>{{ comment.author }}</span>
 			</div>
-			<form ng-submit="addComment()">
+			<div ng-hide="isLoggedIn()">
+				You need to <a ui-sref="login">Log In</a> or <a ui-sref="register">Register</a> to comment.
+			</div>
+			<form ng-submit="addComment()" ng-show="isLoggedIn()">
 				<input type="text" placeholder="comment" ng-model="body">
 				<input type="text" placeholder="author" ng-model="author">
 				<button type="submit">Comment</button>
 			</form>
 		</div>
+	</script>
+
+	<script type="text/ng-template" id="/register.html">
+		<div class="header">
+			Hacker News | Register
+		</div>
+		<div class="error" ng-show="error">
+			<span>{{ error.message }}</span>
+		</div>
+		<form ng-submit="register()">
+			<input type="text" placeholder="username" ng-model="user.username">
+			<input type="password" placeholder="password" ng-model="user.password">
+			<button type="submit">Register</button>
+		</form>
+	</script>
+
+	<script type="text/ng-template" id="/login.html">
+		<div class="header">
+			Hacker News | Login
+		</div>
+		<div class="error" ng-show="error">
+			<span>{{ error.message }}</span>
+		</div>
+		<form ng-submit="login()">
+			<input type="text" placeholder="username" ng-model="user.username">
+			<input type="password" placeholder="password" ng-model="user.password">
+			<button type="submit">Login</button>
+		</form>
 	</script>
 </body>
 </html>
